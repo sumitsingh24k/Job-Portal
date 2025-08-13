@@ -1,14 +1,20 @@
 import React from 'react'
 import { PiSuitcaseLight } from "react-icons/pi";
 import { useClerk,UserButton,useUser } from '@clerk/clerk-react';
-import { Link } from 'react-router-dom';
+import { Link,useNavigate } from 'react-router-dom';
 const Navbar = () => {
+    const navigate = useNavigate();
+  
     const {openSignIn}=useClerk()
     const {user}=useUser()
   return (
     <div className=' shadow py-4    ' >
       <div className='container px-4 2xl:px-20 my-auto flex justify-between item-center'>
-        <div className='flex items-center gap-2 text-lg font-semibold'>
+       {/* Logo and Title */}
+        <div
+          className='flex items-center gap-2 text-lg font-semibold cursor-pointer'
+          onClick={() => navigate('/')}
+        >
           <PiSuitcaseLight />
           JobCircuit
         </div>
