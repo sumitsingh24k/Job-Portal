@@ -6,7 +6,8 @@ import { assets } from '../assets/assets';
 import Navbar from '../components/Navbar';
 import moment from 'moment';
 import JobCard from '../components/JobCard';
-import Footer from '../components/Footer'
+import Footer from '../components/Footer';
+
 const Applyjob = () => {
   const { id } = useParams();
   const [jobdata, setJobdata] = useState(null);
@@ -24,11 +25,12 @@ const Applyjob = () => {
   return jobdata ? (
     <>
       <Navbar />
+
+      {/* MAIN CONTENT */}
       <div className="max-w-7xl mx-auto px-4 py-8 grid grid-cols-1 lg:grid-cols-3 gap-8">
         
         {/* LEFT COLUMN */}
         <div className="lg:col-span-2 space-y-6">
-          {/* Back Button */}
           <button
             onClick={() => window.history.back()}
             className="text-sm text-blue-600 hover:underline flex items-center gap-2"
@@ -77,46 +79,40 @@ const Applyjob = () => {
           </div>
 
           {/* Job Description */}
-         <div class="border border-gray-300 rounded-lg p-6 space-y-4">
-  <h2 class="font-bold text-lg">Job Description</h2>
-  <p>
-    Join our technology team as a Cloud Engineer, where you will be responsible for designing and managing
-    our cloud infrastructure. You will collaborate with development and operations teams to ensure the efficient
-    deployment and scaling of applications.
-  </p>
+          <div className="border border-gray-300 rounded-lg p-6 space-y-4">
+            <h2 className="font-bold text-lg">Job Description</h2>
+            <p>
+              Join our technology team as a Cloud Engineer, where you will be responsible for designing and managing
+              our cloud infrastructure. You will collaborate with development and operations teams to ensure the efficient
+              deployment and scaling of applications.
+            </p>
 
-  <div class="space-y-2">
-    <h3 class="font-bold">Key Responsibilities</h3>
-    <ul class="list-disc pl-6 space-y-1">
-      <li>Design and implement cloud solutions using AWS, Azure, or Google Cloud Platform.</li>
-      <li>Monitor and optimize cloud resources for performance and cost efficiency.</li>
-      <li>Work with DevOps teams to automate deployment processes.</li>
-      <li>Ensure cloud security and compliance with industry standards.</li>
-      <li>Provide technical support and troubleshooting for cloud-based applications.</li>
-    </ul>
-  </div>
+            <div className="space-y-2">
+              <h3 className="font-bold">Key Responsibilities</h3>
+              <ul className="list-disc pl-6 space-y-1">
+                <li>Design and implement cloud solutions using AWS, Azure, or Google Cloud Platform.</li>
+                <li>Monitor and optimize cloud resources for performance and cost efficiency.</li>
+                <li>Work with DevOps teams to automate deployment processes.</li>
+                <li>Ensure cloud security and compliance with industry standards.</li>
+                <li>Provide technical support and troubleshooting for cloud-based applications.</li>
+              </ul>
+            </div>
 
-  <div class="space-y-2">
-    <h3 class="font-bold">Skills Required</h3>
-    <ul class="list-disc pl-6 space-y-1">
-      <li>Experience with cloud platforms and services.</li>
-      <li>Proficiency in scripting languages such as Python or Bash.</li>
-      <li>Strong understanding of networking concepts and security.</li>
-      <li>Experience with container orchestration tools like Kubernetes.</li>
-      <li>Good problem-solving skills and attention to detail.</li>
-    </ul>
-  </div>
-</div>
-
-          {/* Requirements */}
-          
-          {/* Benefits */}
-          
+            <div className="space-y-2">
+              <h3 className="font-bold">Skills Required</h3>
+              <ul className="list-disc pl-6 space-y-1">
+                <li>Experience with cloud platforms and services.</li>
+                <li>Proficiency in scripting languages such as Python or Bash.</li>
+                <li>Strong understanding of networking concepts and security.</li>
+                <li>Experience with container orchestration tools like Kubernetes.</li>
+                <li>Good problem-solving skills and attention to detail.</li>
+              </ul>
+            </div>
+          </div>
         </div>
 
         {/* RIGHT COLUMN */}
         <div className="space-y-6">
-          {/* Apply Form */}
           <div className="bg-white p-6 rounded-lg shadow border">
             <h2 className="text-lg font-bold mb-4">Apply for this job</h2>
             <textarea
@@ -140,9 +136,6 @@ const Applyjob = () => {
             </div>
           </div>
 
-        
-
-          {/* Similar Jobs */}
           <div className="bg-white p-6 rounded-lg shadow border">
             <h2 className="text-lg font-bold mb-3">Similar Jobs</h2>
             {jobs
@@ -159,9 +152,11 @@ const Applyjob = () => {
               View More {jobdata.category} Jobs
             </button>
           </div>
-          <Footer/>
         </div>
       </div>
+
+      {/* FULL-WIDTH FOOTER */}
+      <Footer />
     </>
   ) : (
     <Loading />
