@@ -81,35 +81,9 @@ const Applyjob = () => {
           {/* Job Description */}
           <div className="border border-gray-300 rounded-lg p-6 space-y-4">
             <h2 className="font-bold text-lg">Job Description</h2>
-            <p>
-              Join our technology team as a Cloud Engineer, where you will be responsible for designing and managing
-              our cloud infrastructure. You will collaborate with development and operations teams to ensure the efficient
-              deployment and scaling of applications.
-            </p>
-
-            <div className="space-y-2">
-              <h3 className="font-bold">Key Responsibilities</h3>
-              <ul className="list-disc pl-6 space-y-1">
-                <li>Design and implement cloud solutions using AWS, Azure, or Google Cloud Platform.</li>
-                <li>Monitor and optimize cloud resources for performance and cost efficiency.</li>
-                <li>Work with DevOps teams to automate deployment processes.</li>
-                <li>Ensure cloud security and compliance with industry standards.</li>
-                <li>Provide technical support and troubleshooting for cloud-based applications.</li>
-              </ul>
-            </div>
-
-            <div className="space-y-2">
-              <h3 className="font-bold">Skills Required</h3>
-              <ul className="list-disc pl-6 space-y-1">
-                <li>Experience with cloud platforms and services.</li>
-                <li>Proficiency in scripting languages such as Python or Bash.</li>
-                <li>Strong understanding of networking concepts and security.</li>
-                <li>Experience with container orchestration tools like Kubernetes.</li>
-                <li>Good problem-solving skills and attention to detail.</li>
-              </ul>
-            </div>
+            <div dangerouslySetInnerHTML={{ __html: jobdata.description }} />
           </div>
-        </div>
+        </div> {/* ✅ properly closed left column */}
 
         {/* RIGHT COLUMN */}
         <div className="space-y-6">
@@ -123,17 +97,6 @@ const Applyjob = () => {
             <button className="mt-4 w-full bg-blue-600 text-white py-2 rounded-lg hover:bg-blue-700 flex items-center justify-center gap-2">
               ✈ Apply Now
             </button>
-            <p className="text-sm text-gray-500 mt-2">
-              You need to sign in to apply for jobs
-            </p>
-            <div className="flex gap-2 mt-3">
-              <button className="w-1/2 border rounded-lg py-2 hover:bg-gray-100">
-                Sign In
-              </button>
-              <button className="w-1/2 bg-blue-600 text-white rounded-lg py-2 hover:bg-blue-700">
-                Sign Up
-              </button>
-            </div>
           </div>
 
           <div className="bg-white p-6 rounded-lg shadow border">
