@@ -5,7 +5,7 @@ import connectDB from './config/db.js'
 import { clerkWebhooks } from './controllers/Webhooks.js'
 import companyRoutes from  './routes/companyRoutes.js '
 import connectCloudinary from './config/cloudinary.js'
-
+import jobRouter from './routes/jobRoutes.js'
 
 //initialize express
 const app=express()
@@ -23,7 +23,7 @@ app.use(express.json())
 app.get('/',(req,res)=>res.send('API Working'))
 app.post('/webhooks',clerkWebhooks)
 app.use('/api/company',companyRoutes)
-
+app.use('/api/jobs',jobRouter)
 
 
 //port 
