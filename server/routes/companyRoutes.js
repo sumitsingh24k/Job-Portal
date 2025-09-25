@@ -2,7 +2,7 @@ import express from 'express'
 import upload from "../config/multer.js";
 import { 
   changeJobApplicationsStatus, 
-  changeVisiblity, 
+  changeVisibility,
   getCompanyData,
   getCompanyJobApplicants,
   getCompanyPostedJobs,
@@ -37,6 +37,7 @@ router.get('/list-jobs', protectCompany,getCompanyPostedJobs)
 router.post('/change-status', protectCompany,changeJobApplicationsStatus)
 
 // Change application visibility
-router.post('/change-visiblity',protectCompany, changeVisiblity)
+router.post('/change-visiblity',protectCompany, changeVisibility)
+router.post('/change-visibility',protectCompany, changeVisibility)
 
 export default router

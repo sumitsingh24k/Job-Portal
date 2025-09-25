@@ -1,21 +1,48 @@
 import React, { useContext, useEffect, useState } from 'react';
 import { assets } from '../assets/assets';
 import { AppContext } from '../context/Appcontext';
-
+import axios from 'axios'
+import {useNavigate}  from 'react-router-dom'
 const RecruiterLogin = () => {
+  const navigate=useNavigate()
   const [state, setState] = useState('Login');
   const [image, setImage] = useState(false);
   const [password, setPassword] = useState('');
   const [email, setEmail] = useState('');
   const [name, setName] = useState('');
   const [isTextDataSubmited, setIsTextDataSubmited] = useState(false);
-  const { setShowRecruiterLogin } = useContext(AppContext);
+  const { setShowRecruiterLogin,backendUrl,setCompanyToken,setCompanyData  } = useContext(AppContext);
 
   const onsubmithandler = (e) => {
     e.preventDefault(); // Prevent form submission
     if (state === 'Sign Up' && !isTextDataSubmited) {
       setIsTextDataSubmited(true);
     }
+    try {
+  let data; // declare data in outer scope
+
+  if (state === 'Login') {
+    const response =  axios.post(
+      backendUrl + '/api/company/login',
+      { email, password }
+    );
+    data = response.data; // assign here
+  }
+
+  if (data?.success) {
+    setCompanyData(data.company);
+    setCompanyToken(data.token);
+    localStorage.setItem('companyToken', data.token);
+    setShowRecruiterLogin(false);
+    navigate('/dashboard');
+  } else {
+    toast.error(data?.message || 'Login failed');
+  }
+} catch (error) {
+  console.error(error);
+  toast.error(error.response?.data?.message || 'Something went wrong');
+}
+
   };
 
   useEffect(() => {

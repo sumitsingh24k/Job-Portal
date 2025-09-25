@@ -1,5 +1,5 @@
 import express from 'express'
-import { getJobByID, getjobs } from '../controllers/jobController';
+import { getjobs, getJobByID } from "../controllers/jobController.js";
 
 const router = express.Router()
 

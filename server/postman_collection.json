@@ -1,0 +1,89 @@
+{
+  "info": {
+    "name": "Job Portal API",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "item": [
+    {
+      "name": "Health",
+      "request": {"method": "GET", "url": "http://localhost:5000/"}
+    },
+    {
+      "name": "Jobs - List",
+      "request": {"method": "GET", "url": "http://localhost:5000/api/jobs"}
+    },
+    {
+      "name": "Jobs - Get By Id",
+      "request": {"method": "GET", "url": {"raw": "http://localhost:5000/api/jobs/{{jobId}}", "host": ["http://localhost"], "path": ["5000","api","jobs","{{jobId}}"]}}
+    },
+    {
+      "name": "Company - Register",
+      "request": {
+        "method": "POST",
+        "header": [],
+        "body": {"mode": "formdata", "formdata": [
+          {"key": "name", "value": "Acme", "type": "text"},
+          {"key": "email", "value": "acme@example.com", "type": "text"},
+          {"key": "password", "value": "Password123!", "type": "text"},
+          {"key": "image", "type": "file", "src": []}
+        ]},
+        "url": "http://localhost:5000/api/company/register"
+      }
+    },
+    {
+      "name": "Company - Login",
+      "request": {"method": "POST", "header": [{"key": "Content-Type", "value": "application/json"}], "body": {"mode": "raw", "raw": "{\n  \"email\": \"acme@example.com\",\n  \"password\": \"Password123!\"\n}"}, "url": "http://localhost:5000/api/company/login"}
+    },
+    {
+      "name": "Company - Profile",
+      "request": {"method": "GET", "header": [{"key": "token", "value": "{{companyToken}}"}], "url": "http://localhost:5000/api/company/company"}
+    },
+    {
+      "name": "Company - Post Job",
+      "request": {"method": "POST", "header": [{"key": "Content-Type", "value": "application/json"},{"key": "token", "value": "{{companyToken}}"}], "body": {"mode": "raw", "raw": "{\n  \"name\": \"Frontend Developer\",\n  \"description\": \"React dev\",\n  \"location\": \"Remote\",\n  \"category\": \"Engineering\",\n  \"level\": \"Mid\",\n  \"salary\": 120000\n}"}, "url": "http://localhost:5000/api/company/post-job"}
+    },
+    {
+      "name": "Company - List Jobs",
+      "request": {"method": "GET", "header": [{"key": "token", "value": "{{companyToken}}"}], "url": "http://localhost:5000/api/company/list-jobs"}
+    },
+    {
+      "name": "Company - Applicants",
+      "request": {"method": "GET", "header": [{"key": "token", "value": "{{companyToken}}"}], "url": "http://localhost:5000/api/company/applicants"}
+    },
+    {
+      "name": "Company - Change Status",
+      "request": {"method": "POST", "header": [{"key": "Content-Type", "value": "application/json"},{"key": "token", "value": "{{companyToken}}"}], "body": {"mode": "raw", "raw": "{\n  \"applicationId\": \"{{applicationId}}\",\n  \"status\": \"accepted\"\n}"}, "url": "http://localhost:5000/api/company/change-status"}
+    },
+    {
+      "name": "Company - Change Visibility",
+      "request": {"method": "POST", "header": [{"key": "Content-Type", "value": "application/json"},{"key": "token", "value": "{{companyToken}}"}], "body": {"mode": "raw", "raw": "{\n  \"jobId\": \"{{jobId}}\",\n  \"visible\": false\n}"}, "url": "http://localhost:5000/api/company/change-visibility"}
+    },
+    {
+      "name": "User - Get",
+      "request": {"method": "GET", "header": [{"key": "x-user-id", "value": "{{userId}}"}], "url": "http://localhost:5000/api/users/user"}
+    },
+    {
+      "name": "User - Applications",
+      "request": {"method": "GET", "header": [{"key": "x-user-id", "value": "{{userId}}"}], "url": "http://localhost:5000/api/users/application"}
+    },
+    {
+      "name": "User - Update Resume",
+      "request": {"method": "POST", "header": [{"key": "x-user-id", "value": "{{userId}}"}], "body": {"mode": "formdata", "formdata": [
+        {"key": "resume", "type": "file", "src": []}
+      ]}, "url": "http://localhost:5000/api/users/update-resume"}
+    },
+    {
+      "name": "User - Apply",
+      "request": {"method": "POST", "header": [{"key": "Content-Type", "value": "application/json"},{"key": "x-user-id", "value": "{{userId}}"}], "body": {"mode": "raw", "raw": "{\n  \"jobId\": \"{{jobId}}\"\n}"}, "url": "http://localhost:5000/api/users/apply"}
+    }
+  ],
+  "variable": [
+    {"key": "companyToken", "value": ""},
+    {"key": "jobId", "value": ""},
+    {"key": "userId", "value": ""},
+    {"key": "applicationId", "value": ""}
+  ]
+}
+
+
+

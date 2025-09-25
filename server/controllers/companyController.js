@@ -1,14 +1,15 @@
 import Company from "../models/company.js";
+import Job from "../models/Job.js";
+import JobApplication from "../models/JobApplication.js";
 import bcrypt from "bcrypt";
 import { v2 as cloudinary } from "cloudinary";
 import generateToken from "../utils/generateToken.js";
-import Job from "../models/Job.js";
 
 export const registerCompany = async (req, res) => {
   const { name, email, password } = req.body;
   const imageFile = req.file;
 
-  if (!name || !email || !password || !imageFile) {
+  if (!name || !email || !password) {
     return res.json({ success: false, message: "Missing details" });
   }
 
@@ -21,16 +22,17 @@ export const registerCompany = async (req, res) => {
     const salt = await bcrypt.genSalt(10);
     const hashPassword = await bcrypt.hash(password, salt);
 
-    // Convert buffer to base64 for cloudinary upload
-    const imageUpload = await cloudinary.uploader.upload(
-      `data:${imageFile.mimetype};base64,${imageFile.buffer.toString('base64')}`
-    );
-    
+    let imageUrl = '';
+    if (imageFile && cloudinary.config().cloud_name) {
+      const imageUpload = await cloudinary.uploader.upload(imageFile.path);
+      imageUrl = imageUpload.secure_url;
+    }
+
     const company = await Company.create({ 
       name,
       email,
       password: hashPassword,
-      image: imageUpload.secure_url,
+      image: imageUrl,
     });
 
     res.json({
@@ -50,114 +52,108 @@ export const registerCompany = async (req, res) => {
 };
 
 // company login
-export const logincompany = async (req, res) => {
-  const { email, password } = req.body;
-  
-  try {
-    const company = await Company.findOne({ email });
-    
-    if (company && await bcrypt.compare(password, company.password)) {
-      res.json({
-        success: true,
-        company: {
-          _id: company._id,
-          name: company.name,
-          email: company.email,
-          image: company.image
-        },
-        token: generateToken(company._id)
-      });
-    } else {
-      res.json({ success: false, message: "Invalid email or password" });
-    }
-  } catch (error) {
-    res.json({ success: false, message: "Error: " + error.message });
-  }
-};
 
+export const logincompany = async (req, res) => {
+  try {
+    const { email, password } = req.body;
+    if (!email || !password) return res.json({ success: false, message: 'Missing credentials' });
+
+    const company = await Company.findOne({ email });
+    if (!company) return res.json({ success: false, message: 'Invalid email or password' });
+
+    const isMatch = await bcrypt.compare(password, company.password);
+    if (!isMatch) return res.json({ success: false, message: 'Invalid email or password' });
+
+    return res.json({ success: true, token: generateToken(company._id) });
+  } catch (error) {
+    res.json({ success: false, message: 'Error: ' + error.message });
+  }
+}
 
 
 
 // get company data
 export const getCompanyData = async (req, res) => {
   try {
-    const company = req.company;
-    if (!company) {
-      return res.json({ success: false, message: 'Error occurred' });
-    }
-    return res.json({ success: true, company });
+    const company = req.Company;
+    if (!company) return res.status(401).json({ success: false, message: 'Unauthorized' });
+    res.json({ success: true, company });
   } catch (error) {
-    return res.json({ success: false, message: "Error: " + error.message });
+    res.json({ success: false, message: 'Error: ' + error.message });
   }
-};
-
+}
 // post a new job 
-export const postJob=async(req,res)=>{
-  const {title,description,location,salary,level,category}=req.body;
-  const companyID=req.Company._id
-  try{
-    const newJob=new Job({
-      title,
+export const postJob = async (req, res) => {
+  try {
+    const company = req.Company;
+    const { name, description, location, category, level, salary } = req.body;
+    if (!company) return res.status(401).json({ success: false, message: 'Unauthorized' });
+    if (!name || !description || !location || !category || !level || !salary) {
+      return res.json({ success: false, message: 'Missing job fields' });
+    }
+    const job = await Job.create({
+      name,
       description,
       location,
-      salary,
-      companyID,
-      date:Date.now(),
+      category,
       level,
-      category
-    })
-    await newJob.save()
-  res.json({success:true,newJob})
-
-  }catch(error){
-    res.json({ success: false, message: "Error: " + error.message });
+      salary,
+      date: Date.now(),
+      companyId: company._id,
+    });
+    res.json({ success: true, job });
+  } catch (error) {
+    res.json({ success: false, message: 'Error: ' + error.message });
   }
-  
-
 }
 // get company job applicants
-export const getCompanyJobApplicants=async(req,res)=>{
-
+export const getCompanyJobApplicants = async (req, res) => {
+  try {
+    const company = req.Company;
+    if (!company) return res.status(401).json({ success: false, message: 'Unauthorized' });
+    const applicants = await JobApplication.find({ companyId: company._id })
+      .populate('userId', 'name email image')
+      .populate('jobId', 'name');
+    res.json({ success: true, applicants });
+  } catch (error) {
+    res.json({ success: false, message: 'Error: ' + error.message });
+  }
 }
 // get compamy posted jobs
-export const getCompanyPostedJobs=async(req,res)=>{
-  try{
-    const companyID=req.company._id
-    const jobs=await Job.find({companyID})
-
-
-    res.json({success:true,jobsData:jobs})
-
-  }catch(error){
-    res.json({success:false,message:error.message})
-
+export const getCompanyPostedJobs = async (req, res) => {
+  try {
+    const company = req.Company;
+    if (!company) return res.status(401).json({ success: false, message: 'Unauthorized' });
+    const jobs = await Job.find({ companyId: company._id });
+    res.json({ success: true, jobs });
+  } catch (error) {
+    res.json({ success: false, message: 'Error: ' + error.message });
   }
 }
 //get company Applicants status
-export const changeJobApplicationsStatus=async(req,res)=>{
-
+export const changeJobApplicationsStatus = async (req, res) => {
+  try {
+    const company = req.Company;
+    const { applicationId, status } = req.body;
+    if (!company) return res.status(401).json({ success: false, message: 'Unauthorized' });
+    const allowed = ['pending', 'accepted', 'rejected'];
+    if (!allowed.includes(status)) return res.json({ success: false, message: 'Invalid status' });
+    await JobApplication.findOneAndUpdate({ _id: applicationId, companyId: company._id }, { status });
+    res.json({ success: true });
+  } catch (error) {
+    res.json({ success: false, message: 'Error: ' + error.message });
+  }
 }
 
 // change job visibllity
 export const changeVisibility = async (req, res) => {
   try {
-    const { id } = req.body;
-    const companyID = req.company._id;
-
-    const job = await Job.findById(id);
-    if (!job) {
-      return res.json({ success: false, message: "Job not found" });
-    }
-
-    if (companyID.toString() !== job.companyId.toString()) {
-      return res.json({ success: false, message: "Unauthorized action" });
-    }
-
-    job.visible = !job.visible;
-    await job.save();
-
-    return res.json({ success: true, job });
+    const company = req.Company;
+    const { jobId, visible } = req.body;
+    if (!company) return res.status(401).json({ success: false, message: 'Unauthorized' });
+    await Job.findOneAndUpdate({ _id: jobId, companyId: company._id }, { visible });
+    res.json({ success: true });
   } catch (error) {
-    return res.json({ success: false, message: error.message });
+    res.json({ success: false, message: 'Error: ' + error.message });
   }
-};
+}
