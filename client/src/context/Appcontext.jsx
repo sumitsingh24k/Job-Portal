@@ -16,11 +16,36 @@ export const AppContextProvider=(props)=>{
     const [companyData,setCompanyData]=useState(null)
     const fetchjobs=async=>{
         setjobs(jobsData)
+
+    }
+
+    //fetch company dat a
+    const fetchCompanyData=async()=>{
+        try{
+            const {data}=await axios.get(backendUrl+'api/company/company',{headers:{token:companyToken}})
+            if (data.success){
+                setCompanyData(data.company)
+            }else{
+                toast.error(data.message)
+            }
+        }catch(error){
+
+        toast.error(error.message)
+        }
     }
     useEffect(()=>{
+        if(companyToken){
+            fetchCompanyData()
+        }
+    }, [companyToken])
+    useEffect(()=>{
         fetchjobs()
+        const storedCompanyToken=localStorage.getItem('companyToken')
+        if (storedCompanyToken){
+            setCompanyToken(storedCompanyToken)
+        }
+    })
 
-    },)
     const value={
         setSearchFilter,searchFilter,
         isSearched,setIsSearched,
